@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'LPMQ';
+    src: url('./fonts/LPMQ.ttf')format('truetype');
+
+}
+
+.arab {
+    font-family: 'LPMQ' !important
+}
