@@ -1,23 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Autocomplete, TextField } from "@mui/material";
-import axios from "axios";
 import moment from "moment";
 
 import React, { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { getAllCity } from "../../feature/jadwal/actions";
-
-interface prosJadwalSolat {
-  jadwal: {
-    maghrib: string;
-    isya: string;
-    ashar: string;
-    dzuhur: string;
-    subuh: string;
-    imsak: string;
-    terbit: string;
-  };
-}
+import { getAllCity, getJadwalSolat } from "../../feature/jadwal/actions";
+import { tanggal } from "../../utils/date";
 
 interface PropsTipeSolat {
   nama: string;
@@ -32,10 +20,9 @@ interface propsLocation {
 }
 
 const MainPage: React.FC = () => {
-  const { allCity } = useAppSelector((state) => state.jadwal);
+  const { allCity, solat } = useAppSelector((state) => state.jadwal);
   const dispatch = useAppDispatch();
   const [time, setTime] = useState(moment());
-  const [jadwalSolat, setJadwalSolat] = useState<prosJadwalSolat>();
   const [tipeSolat, setTipeSolat] = useState<PropsTipeSolat>();
 
   const [idCity, setIdCity] = useState<propsLocation>({
@@ -48,14 +35,14 @@ const MainPage: React.FC = () => {
   }, [dispatch]);
 
   const audioRef = useRef<HTMLAudioElement>(null);
-
   const timeNow = moment().format("HH:mm");
+  const jadwal = solat?.data?.jadwal;
 
-  timeNow === jadwalSolat?.jadwal?.isya ||
-  timeNow === jadwalSolat?.jadwal?.subuh ||
-  timeNow === jadwalSolat?.jadwal?.dzuhur ||
-  timeNow === jadwalSolat?.jadwal?.ashar ||
-  timeNow === jadwalSolat?.jadwal?.maghrib ||
+  timeNow === jadwal?.isya ||
+  timeNow === jadwal?.subuh ||
+  timeNow === jadwal?.dzuhur ||
+  timeNow === jadwal?.ashar ||
+  timeNow === jadwal?.maghrib ||
   timeNow === "09:20"
     ? audioRef.current?.play()
     : audioRef.current?.pause();
@@ -72,78 +59,59 @@ const MainPage: React.FC = () => {
 
   const sekarang = moment();
 
-  const dateHijri = new Intl.DateTimeFormat("id-TN-u-ca-islamic", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  }).format(Date.now());
-
-  const dateMasehi = new Intl.DateTimeFormat("id", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  }).format(Date.now());
-
   useEffect(() => {
-    idCity !== undefined &&
-      axios
-        .get(`https://api.myquran.com/v1/sholat/jadwal/${idCity.id}/${today}`)
-        .then((item) => {
-          const jadwalSolat = item?.data?.data;
+    dispatch(getJadwalSolat({ id: idCity?.id, today: today })).then((item) => {
+      const jadwalSolat = item.payload.data;
 
-          const random: PropsTipeSolat[] = [
-            {
-              nama: "Subuh",
-              waktu: moment(jadwalSolat?.jadwal?.subuh, "HH:ii"),
-              clock: jadwalSolat?.jadwal?.subuh,
-            },
-            {
-              nama: "Dzuhur",
-              waktu: moment(jadwalSolat?.jadwal?.dzuhur, "HH:ii"),
-              clock: jadwalSolat?.jadwal?.dzuhur,
-            },
-            {
-              nama: "Ashar",
-              waktu: moment(jadwalSolat?.jadwal?.ashar, "HH:ii"),
-              clock: jadwalSolat?.jadwal?.ashar,
-            },
-            {
-              nama: "Maghrib",
-              waktu: moment(jadwalSolat?.jadwal?.maghrib, "HH:ii"),
-              clock: jadwalSolat?.jadwal?.maghrib,
-            },
-            {
-              nama: "Isya",
-              waktu: moment(jadwalSolat?.jadwal?.isya, "HH:ii"),
-              clock: jadwalSolat?.jadwal?.isya,
-            },
-          ];
+      const random: PropsTipeSolat[] = [
+        {
+          nama: "Subuh",
+          waktu: moment(jadwalSolat?.jadwal?.subuh, "HH:ii"),
+          clock: jadwalSolat?.jadwal?.subuh,
+        },
+        {
+          nama: "Dzuhur",
+          waktu: moment(jadwalSolat?.jadwal?.dzuhur, "HH:ii"),
+          clock: jadwalSolat?.jadwal?.dzuhur,
+        },
+        {
+          nama: "Ashar",
+          waktu: moment(jadwalSolat?.jadwal?.ashar, "HH:ii"),
+          clock: jadwalSolat?.jadwal?.ashar,
+        },
+        {
+          nama: "Maghrib",
+          waktu: moment(jadwalSolat?.jadwal?.maghrib, "HH:ii"),
+          clock: jadwalSolat?.jadwal?.maghrib,
+        },
+        {
+          nama: "Isya",
+          waktu: moment(jadwalSolat?.jadwal?.isya, "HH:ii"),
+          clock: jadwalSolat?.jadwal?.isya,
+        },
+      ];
 
-          const jadwalSaatIni = random?.find((jadwal) =>
-            sekarang?.isSameOrBefore(jadwal?.waktu)
-          );
+      const jadwalSaatIni = random?.find((jadwal) =>
+        sekarang?.isSameOrBefore(jadwal?.waktu)
+      );
 
-          const selisih = jadwalSaatIni?.waktu?.diff(sekarang);
-          const durasi = moment?.duration(selisih);
-          const jam = durasi?.hours();
-          const menit = durasi?.minutes();
+      const selisih = jadwalSaatIni?.waktu?.diff(sekarang);
+      const durasi = moment?.duration(selisih);
+      const jam = durasi?.hours();
+      const menit = durasi?.minutes();
 
-          setTipeSolat({
-            nama: String(jadwalSaatIni?.nama),
-            time: `${jam}:${menit}`,
-            clock: jadwalSaatIni?.clock,
-          });
+      setTipeSolat({
+        nama: String(jadwalSaatIni?.nama),
+        time: `${jam}:${menit}`,
+        clock: jadwalSaatIni?.clock,
+      });
+    });
+  }, [dispatch, idCity?.id, sekarang, today]);
 
-          setJadwalSolat(item?.data?.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-  }, [idCity, idCity?.id, sekarang, today]);
-
-  const onHandleChangeLocation = (e: any, newValue: any) => {
-    console.log("event", e.target);
-    const filterLokasi: any = allCity?.find((item) => item.lokasi === newValue);
+  const onHandleChangeLocation = (_e: any, newValue: any) => {
+    const filterLokasi: any = allCity?.find(
+      (item) => item.lokasi === newValue.lokasi
+    );
     console.log("apalah daya", filterLokasi);
     if (filterLokasi === undefined) {
       setIdCity({
@@ -170,7 +138,7 @@ const MainPage: React.FC = () => {
       <div className="container mx-auto">
         <div className="flex flex-col items-center justify-center h-[calc(100vh-36px)] min-h-[736px] mb-3">
           <h1 className="text-xl md:text-4xl font-bold text-center mx-1 md:mx-0">
-            {dateMasehi} M | {dateHijri}
+            {tanggal.masehi} M | {tanggal.hijriah}
           </h1>
           <h2 className="text-lg md:text-2xl font-semibold">
             Waktu Solat Berikutnya
@@ -204,10 +172,7 @@ const MainPage: React.FC = () => {
             </div>
           </div>
           <Autocomplete
-            // disablePortal
             {...defaultProps}
-            // id="combo-box-demo"
-            // options={listCity?.map((item) => item.lokasi)}
             sx={{ width: 300 }}
             onChange={(e, newValue) => onHandleChangeLocation(e, newValue)}
             id="select-on-focus"
@@ -225,31 +190,31 @@ const MainPage: React.FC = () => {
               <div className="grid grid-cols-3 md:grid-cols-7 gap-6">
                 <div className="flex flex-col justify-center items-center">
                   <p className="font-bold text-base">Imsak</p>
-                  <p>{jadwalSolat?.jadwal?.imsak}</p>
+                  <p>{jadwal?.imsak}</p>
                 </div>
                 <div className="flex flex-col justify-center items-center">
                   <p className="font-bold text-base">Subuh</p>
-                  <p>{jadwalSolat?.jadwal?.subuh}</p>
+                  <p>{jadwal?.subuh}</p>
                 </div>
                 <div className="flex flex-col justify-center items-center">
                   <p className="font-bold text-base">Terbit</p>
-                  <p>{jadwalSolat?.jadwal?.terbit}</p>
+                  <p>{jadwal?.terbit}</p>
                 </div>
                 <div className="flex flex-col justify-center items-center">
                   <p className="font-bold text-base">Dzuhur</p>
-                  <p>{jadwalSolat?.jadwal?.dzuhur}</p>
+                  <p>{jadwal?.dzuhur}</p>
                 </div>
                 <div className="flex flex-col justify-center items-center">
                   <p className="font-bold text-base">Ashar</p>
-                  <p>{jadwalSolat?.jadwal?.ashar}</p>
+                  <p>{jadwal?.ashar}</p>
                 </div>
                 <div className="flex flex-col justify-center items-center">
                   <p className="font-bold text-base">Maghrib</p>
-                  <p>{jadwalSolat?.jadwal?.maghrib}</p>
+                  <p>{jadwal?.maghrib}</p>
                 </div>
                 <div className="flex flex-col justify-center items-center">
                   <p className="font-bold text-base">Isya</p>
-                  <p>{jadwalSolat?.jadwal?.isya}</p>
+                  <p>{jadwal?.isya}</p>
                 </div>
               </div>
             </div>

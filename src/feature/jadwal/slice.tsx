@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
-import { getAllCity } from "./actions";
+import { getAllCity, getJadwalSolat } from "./actions";
 
 interface propsLocation {
   id: string;
@@ -10,11 +10,13 @@ interface propsLocation {
 interface UsersState {
   allCity: propsLocation[];
   loading: "idle" | "pending" | "succeeded" | "failed";
+  solat: any;
 }
 
 const initialState = {
   allCity: [],
   loading: "idle",
+  solat: null,
 } as UsersState;
 
 // Then, handle actions in your reducers:
@@ -27,8 +29,10 @@ const jadwalSlice = createSlice({
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(getAllCity.fulfilled, (state, action) => {
-      // Add user to the state array
       state.allCity = action.payload;
+    });
+    builder.addCase(getJadwalSolat.fulfilled, (state, action) => {
+      state.solat = action.payload;
     });
   },
 });

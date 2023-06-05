@@ -2,42 +2,49 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import connection from "../../config/connection";
 
+interface propsJadwalSolat {
+  id: string;
+  today: string;
+}
+
 export const getAllCity = createAsyncThunk(
   "jadwal/all-city",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await connection.get(`sholat/kota/semua`);
+      const res = await connection.get(`sholat/kota/semua`);
 
       const messages = "something went wrong";
-      if (response.status != 200) {
+      if (res.status != 200) {
         throw new Error(messages);
       }
 
-      return response.data;
+      return res.data;
       //   return data;
     } catch (e: any) {
       console.log("Error", e);
-      return rejectWithValue(e.response.data);
+      return rejectWithValue(e.res.data);
     }
   }
 );
 
-export const getJadwalSolat = createAsyncThunk<
-  string,
-  { id: string; today: string }
->("jadwal/solat", async ({ id, today }, { rejectWithValue }) => {
-  try {
-    const response = await connection.get(`sholat/jadwal/${id}/${today}`);
+export const getJadwalSolat = createAsyncThunk<any, propsJadwalSolat>(
+  "jadwal/solat",
+  async ({ id, today }, { rejectWithValue }) => {
+    try {
+      const res: any = await connection.get(`sholat/jadwal/${id}/${today}`);
 
-    const messages = "something went wrong";
-    if (response.status != 200) {
-      throw new Error(messages);
+      const messages = "something went wrong";
+      if (res.status != 200) {
+        throw new Error(messages);
+      }
+
+      //   return console.log(res.data.data);
+
+      return res.data;
+      //   return data;
+    } catch (e: any) {
+      console.log("Error", e);
+      return rejectWithValue(e.res.data);
     }
-
-    return response.data;
-    //   return data;
-  } catch (e: any) {
-    console.log("Error", e);
-    return rejectWithValue(e.response.data);
   }
-});
+);
