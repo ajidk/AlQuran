@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Autocomplete, TextField } from "@mui/material";
 import axios from "axios";
-import "dayjs/locale/id"; // Impor lokal bahasa Indonesia
 import moment from "moment";
-// import hijri from "dayjs-hijri";
-import dayjs from "dayjs";
+
 import React, { useEffect, useRef, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { getAllCity } from "../../feature/jadwal/actions";
 
 interface prosJadwalSolat {
   jadwal: {
@@ -17,26 +19,35 @@ interface prosJadwalSolat {
   };
 }
 
-// dayjs.extend(hijri);
-dayjs.locale("id"); // Atur lokal bahasa Indonesia
+interface PropsTipeSolat {
+  nama: string;
+  waktu?: moment.Moment;
+  time?: string;
+  clock?: string;
+}
+
+interface propsLocation {
+  id: string;
+  lokasi: string;
+}
 
 const MainPage: React.FC = () => {
-  const [time, setTime] = useState(new Date());
+  const { allCity } = useAppSelector((state) => state.jadwal);
+  const dispatch = useAppDispatch();
+  const [time, setTime] = useState(moment());
   const [jadwalSolat, setJadwalSolat] = useState<prosJadwalSolat>();
-  const [tipeSolat, setTipeSolat] = useState({
-    title: "",
-    time: "",
+  const [tipeSolat, setTipeSolat] = useState<PropsTipeSolat>();
+
+  const [idCity, setIdCity] = useState<propsLocation>({
+    id: "1010",
+    lokasi: "KAB. TULANG BAWANG",
   });
 
-  const audioRef = useRef<HTMLAudioElement>(null);
+  useEffect(() => {
+    dispatch(getAllCity());
+  }, [dispatch]);
 
-  const solat = {
-    isya: jadwalSolat?.jadwal?.isya,
-    subuh: jadwalSolat?.jadwal?.subuh,
-    dzuhur: jadwalSolat?.jadwal?.dzuhur,
-    ashar: jadwalSolat?.jadwal?.ashar,
-    maghrib: jadwalSolat?.jadwal?.maghrib,
-  };
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const timeNow = moment().format("HH:mm");
 
@@ -45,25 +56,13 @@ const MainPage: React.FC = () => {
   timeNow === jadwalSolat?.jadwal?.dzuhur ||
   timeNow === jadwalSolat?.jadwal?.ashar ||
   timeNow === jadwalSolat?.jadwal?.maghrib ||
-  timeNow === "22:33"
+  timeNow === "09:20"
     ? audioRef.current?.play()
     : audioRef.current?.pause();
 
-  timeNow === jadwalSolat?.jadwal?.isya
-    ? setTipeSolat({ title: "Isya", time: jadwalSolat.jadwal.isya })
-    : timeNow === jadwalSolat?.jadwal?.subuh
-    ? setTipeSolat({ title: "Subuh", time: jadwalSolat.jadwal.subuh })
-    : timeNow === jadwalSolat?.jadwal?.dzuhur
-    ? setTipeSolat({ title: "Dzuhur", time: jadwalSolat.jadwal.dzuhur })
-    : timeNow === jadwalSolat?.jadwal?.ashar
-    ? setTipeSolat({ title: "Ashar", time: jadwalSolat.jadwal.ashar })
-    : timeNow === jadwalSolat?.jadwal?.maghrib
-    ? setTipeSolat({ title: "Maghrib", time: jadwalSolat.jadwal.maghrib })
-    : "";
-
   useEffect(() => {
     const timer = setInterval(() => {
-      setTime(new Date());
+      setTime(moment());
     }, 1000);
 
     return () => clearInterval(timer);
@@ -71,122 +70,153 @@ const MainPage: React.FC = () => {
 
   const today = moment().format("YYYY/MM/DD");
 
-  const currentDate = dayjs(); // Dapatkan tanggal saat ini
-
-  // Mendapatkan waktu sekarang
   const sekarang = moment();
 
-  // Menentukan jadwal solat
-  const random = [
-    {
-      nama: "Subuh",
-      waktu: moment(jadwalSolat?.jadwal.subuh, "HH:ii"),
-    },
-    {
-      nama: "Dzuhur",
-      waktu: moment(jadwalSolat?.jadwal.dzuhur, "HH:ii"),
-    },
-    {
-      nama: "Ashar",
-      waktu: moment(jadwalSolat?.jadwal.ashar, "HH:ii"),
-    },
-    {
-      nama: "Maghrib",
-      waktu: moment(jadwalSolat?.jadwal.maghrib, "HH:ii"),
-    },
-    {
-      nama: "Isya",
-      waktu: moment(jadwalSolat?.jadwal.isya, "HH:ii"),
-    },
-  ];
-
-  // Memeriksa jadwal solat saat ini
-  const jadwalSaatIni: any = random?.find((jadwal) =>
-    sekarang?.isSameOrBefore(jadwal.waktu)
-  );
-
-  const selisih = jadwalSaatIni?.waktu?.diff(sekarang);
-  const durasi = moment?.duration(selisih);
-  const jam = durasi?.hours();
-  const menit = durasi?.minutes();
-  if (jadwalSaatIni) {
-    // console.log(`Saat ini sedang waktu ${jadwalSaatIni.nama}`);
-    console.log(
-      `Sisa waktu hingga ${jadwalSaatIni.nama} adalah ${jam} jam ${menit} menit.`
-    );
-  } else {
-    console.log("Sudah melewati waktu solat hari ini.");
-  }
-  console.log(`Saat ini sedang waktu ${jadwalSaatIni?.nama}`);
-  // console.log("apaan tu bang messi", Math.floor(random / (60 * 60 * 1000)));
-
-  const formattedHijriDate = currentDate.format("DD MMMM YYYY");
-
-  const b = currentDate.isAfter(jadwalSolat?.jadwal?.subuh, "hours");
-
-  console.log("bbbe", b);
-
   const dateHijri = new Intl.DateTimeFormat("id-TN-u-ca-islamic", {
-    day: "numeric",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(Date.now());
+
+  const dateMasehi = new Intl.DateTimeFormat("id", {
+    day: "2-digit",
     month: "long",
     year: "numeric",
   }).format(Date.now());
 
   useEffect(() => {
-    axios
-      .get(`https://api.myquran.com/v1/sholat/jadwal/1010/${today}`)
-      .then((item) => {
-        setJadwalSolat(item?.data?.data);
-      })
-      .catch((error) => {
-        console.log(error);
+    idCity !== undefined &&
+      axios
+        .get(`https://api.myquran.com/v1/sholat/jadwal/${idCity.id}/${today}`)
+        .then((item) => {
+          const jadwalSolat = item?.data?.data;
+
+          const random: PropsTipeSolat[] = [
+            {
+              nama: "Subuh",
+              waktu: moment(jadwalSolat?.jadwal?.subuh, "HH:ii"),
+              clock: jadwalSolat?.jadwal?.subuh,
+            },
+            {
+              nama: "Dzuhur",
+              waktu: moment(jadwalSolat?.jadwal?.dzuhur, "HH:ii"),
+              clock: jadwalSolat?.jadwal?.dzuhur,
+            },
+            {
+              nama: "Ashar",
+              waktu: moment(jadwalSolat?.jadwal?.ashar, "HH:ii"),
+              clock: jadwalSolat?.jadwal?.ashar,
+            },
+            {
+              nama: "Maghrib",
+              waktu: moment(jadwalSolat?.jadwal?.maghrib, "HH:ii"),
+              clock: jadwalSolat?.jadwal?.maghrib,
+            },
+            {
+              nama: "Isya",
+              waktu: moment(jadwalSolat?.jadwal?.isya, "HH:ii"),
+              clock: jadwalSolat?.jadwal?.isya,
+            },
+          ];
+
+          const jadwalSaatIni = random?.find((jadwal) =>
+            sekarang?.isSameOrBefore(jadwal?.waktu)
+          );
+
+          const selisih = jadwalSaatIni?.waktu?.diff(sekarang);
+          const durasi = moment?.duration(selisih);
+          const jam = durasi?.hours();
+          const menit = durasi?.minutes();
+
+          setTipeSolat({
+            nama: String(jadwalSaatIni?.nama),
+            time: `${jam}:${menit}`,
+            clock: jadwalSaatIni?.clock,
+          });
+
+          setJadwalSolat(item?.data?.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+  }, [idCity, idCity?.id, sekarang, today]);
+
+  const onHandleChangeLocation = (e: any, newValue: any) => {
+    console.log("event", e.target);
+    const filterLokasi: any = allCity?.find((item) => item.lokasi === newValue);
+    console.log("apalah daya", filterLokasi);
+    if (filterLokasi === undefined) {
+      setIdCity({
+        ...idCity,
+        id: "1010",
+        lokasi: "KAB. TULANG BAWANG",
       });
-  }, [today]);
+    } else {
+      setIdCity({
+        ...idCity,
+        id: String(filterLokasi?.id),
+        lokasi: String(filterLokasi?.lokasi),
+      });
+    }
+  };
+
+  const defaultProps = {
+    options: allCity,
+    getOptionLabel: (option: propsLocation) => option.lokasi,
+  };
 
   return (
     <main className="bg-mosque bg-no-repeat bg-cover bg-center">
       <div className="container mx-auto">
         <div className="flex flex-col items-center justify-center h-[calc(100vh-36px)] min-h-[736px] mb-3">
           <h1 className="text-xl md:text-4xl font-bold text-center mx-1 md:mx-0">
-            {formattedHijriDate} M | {dateHijri}
+            {dateMasehi} M | {dateHijri}
           </h1>
           <h2 className="text-lg md:text-2xl font-semibold">
             Waktu Solat Berikutnya
           </h2>
           <h3 className="text-5xl md:text-8xl font-semibold -mt-2">
-            {jadwalSaatIni?.nama}
+            {tipeSolat?.nama}
           </h3>
           <h4 className="text-xl md:text-3xl font-semibold">
-            {/* {jam}:{menit} */}
+            {tipeSolat?.clock}
           </h4>
           <div className="flex items-center space-x-1 my-4">
             <div className="text-5xl md:text-9xl p-5 md:p-8 rounded-3xl bg-white/40 backdrop-blur-sm shadow-xl flex justify-center">
-              <p className="relative">{moment(time).format("HH")}</p>
+              <p className="relative">{time.format("HH")}</p>
               <p className="text-base md:text-xl font-semibold absolute bottom-2 md:bottom-5 leading-[1]">
                 Jam
               </p>
             </div>
             <p className="text-5xl md:text-9xl">:</p>
             <div className="text-5xl md:text-9xl p-5 md:p-8 rounded-3xl bg-white/40 backdrop-blur-sm shadow-xl flex justify-center">
-              <p className="relative">{moment(time).format("mm")}</p>
+              <p className="relative">{time.format("mm")}</p>
               <p className="text-base md:text-xl font-semibold absolute bottom-2 md:bottom-5 leading-[1]">
                 Menit
               </p>
             </div>
             <p className="text-5xl md:text-9xl">:</p>
             <div className="text-5xl md:text-9xl p-5 md:p-8 rounded-3xl bg-white/40 backdrop-blur-sm shadow-xl flex justify-center">
-              <p className="relative">{moment(time).format("ss")}</p>
+              <p className="relative">{time.format("ss")}</p>
               <p className="text-base md:text-xl font-semibold absolute bottom-2 md:bottom-5 leading-[1]">
                 Detik
               </p>
             </div>
           </div>
-          {/* <h4 className="text-lg md:text-2xl font-semibold text-center">
-            Sehingga Waktu Solat Seterusnya Di Zon
-          </h4> */}
-          <h4 className="font-bold text-base md:text-2xl text-center">
-            Tulang Bawang
-          </h4>
+          <Autocomplete
+            // disablePortal
+            {...defaultProps}
+            // id="combo-box-demo"
+            // options={listCity?.map((item) => item.lokasi)}
+            sx={{ width: 300 }}
+            onChange={(e, newValue) => onHandleChangeLocation(e, newValue)}
+            id="select-on-focus"
+            selectOnFocus
+            renderInput={(params) => (
+              <TextField {...params} label="KAB. TULANG BAWANG" />
+            )}
+          />
+
           <div className="w-full md:w-auto">
             <div className="rounded-xl bg-white/40 backdrop-blur-sm shadow-lg mx-3 md:mx-0 mt-6 py-4 px-5">
               <h4 className="text-center mb-4 font-extrabold text-xl">
@@ -231,12 +261,12 @@ const MainPage: React.FC = () => {
           <p className="font-normal">
             Waktu Solat © 2023 Created by
             <a
-              href="https://www.salimi.my"
+              href="https://suraji.my.id/"
               target="_blank"
               rel="noreferrer"
               className="hover:underline hover:font-semibold"
             >
-              Salimi
+              Suraji
             </a>
           </p>
         </div>

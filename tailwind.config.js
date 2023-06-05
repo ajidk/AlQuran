@@ -5,7 +5,7 @@ export default {
     extend: {
       backgroundImage: {
         "frame-number": "url('../assets/icons/ic-frame-number.svg')",
-        mosque: "url('../src/assets/img/bg.webp')",
+        mosque: "url('../src/assets/img/medina.webp')",
       },
     },
   },
