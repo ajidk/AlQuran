@@ -19,15 +19,11 @@ const initialState = {
   solat: null,
 } as UsersState;
 
-// Then, handle actions in your reducers:
 const jadwalSlice = createSlice({
   name: "solat",
   initialState,
-  reducers: {
-    // standard reducer logic, with auto-generated action types per reducer
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(getAllCity.fulfilled, (state, action) => {
       state.allCity = action.payload;
     });
