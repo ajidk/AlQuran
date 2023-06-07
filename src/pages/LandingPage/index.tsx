@@ -6,6 +6,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getAllCity, getJadwalSolat } from "../../feature/jadwal/actions";
 import { tanggal } from "../../utils/date";
+import Clock from "./Clock";
+import PrayerToday from "./PrayerToday";
 
 interface PropsTipeSolat {
   nama: string;
@@ -22,7 +24,7 @@ interface propsLocation {
 const MainPage: React.FC = () => {
   const { allCity, solat } = useAppSelector((state) => state.jadwal);
   const dispatch = useAppDispatch();
-  const [time, setTime] = useState(moment());
+
   const [tipeSolat, setTipeSolat] = useState<PropsTipeSolat>();
 
   const [idCity, setIdCity] = useState<propsLocation>({
@@ -48,54 +50,44 @@ const MainPage: React.FC = () => {
     : audioRef.current?.pause();
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTime(moment());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  const today = moment().format("YYYY/MM/DD");
-
-  const sekarang = moment();
-
-  useEffect(() => {
-    dispatch(getJadwalSolat({ id: idCity?.id, today: today })).then((item) => {
-      const jadwalSolat = item.payload.data;
+    dispatch(
+      getJadwalSolat({ id: idCity?.id, today: moment().format("YYYY/MM/DD") })
+    ).then((item) => {
+      const jadwalSolat = item.payload.data.jadwal;
 
       const random: PropsTipeSolat[] = [
         {
           nama: "Subuh",
-          waktu: moment(jadwalSolat?.jadwal?.subuh, "HH:ii"),
-          clock: jadwalSolat?.jadwal?.subuh,
+          waktu: moment(jadwalSolat?.subuh, "HH:ii"),
+          clock: jadwalSolat?.subuh,
         },
         {
           nama: "Dzuhur",
-          waktu: moment(jadwalSolat?.jadwal?.dzuhur, "HH:ii"),
-          clock: jadwalSolat?.jadwal?.dzuhur,
+          waktu: moment(jadwalSolat?.dzuhur, "HH:ii"),
+          clock: jadwalSolat?.dzuhur,
         },
         {
           nama: "Ashar",
-          waktu: moment(jadwalSolat?.jadwal?.ashar, "HH:ii"),
-          clock: jadwalSolat?.jadwal?.ashar,
+          waktu: moment(jadwalSolat?.ashar, "HH:ii"),
+          clock: jadwalSolat?.ashar,
         },
         {
           nama: "Maghrib",
-          waktu: moment(jadwalSolat?.jadwal?.maghrib, "HH:ii"),
-          clock: jadwalSolat?.jadwal?.maghrib,
+          waktu: moment(jadwalSolat?.maghrib, "HH:ii"),
+          clock: jadwalSolat?.maghrib,
         },
         {
           nama: "Isya",
-          waktu: moment(jadwalSolat?.jadwal?.isya, "HH:ii"),
-          clock: jadwalSolat?.jadwal?.isya,
+          waktu: moment(jadwalSolat?.isya, "HH:ii"),
+          clock: jadwalSolat?.isya,
         },
       ];
 
       const jadwalSaatIni = random?.find((jadwal) =>
-        sekarang?.isSameOrBefore(jadwal?.waktu)
+        moment()?.isSameOrBefore(jadwal?.waktu)
       );
 
-      const selisih = jadwalSaatIni?.waktu?.diff(sekarang);
+      const selisih = jadwalSaatIni?.waktu?.diff(moment());
       const durasi = moment?.duration(selisih);
       const jam = durasi?.hours();
       const menit = durasi?.minutes();
@@ -106,7 +98,7 @@ const MainPage: React.FC = () => {
         clock: jadwalSaatIni?.clock,
       });
     });
-  }, [dispatch, idCity?.id, sekarang, today]);
+  }, [dispatch, idCity?.id]);
 
   const onHandleChangeLocation = (_e: any, newValue: any) => {
     const filterLokasi: any = allCity?.find(
@@ -149,28 +141,7 @@ const MainPage: React.FC = () => {
           <h4 className="text-xl md:text-3xl font-semibold">
             {tipeSolat?.clock}
           </h4>
-          <div className="flex items-center space-x-1 my-4">
-            <div className="text-5xl md:text-9xl p-5 md:p-8 rounded-3xl bg-white/40 backdrop-blur-sm shadow-xl flex justify-center">
-              <p className="relative">{time.format("HH")}</p>
-              <p className="text-base md:text-xl font-semibold absolute bottom-2 md:bottom-5 leading-[1]">
-                Jam
-              </p>
-            </div>
-            <p className="text-5xl md:text-9xl">:</p>
-            <div className="text-5xl md:text-9xl p-5 md:p-8 rounded-3xl bg-white/40 backdrop-blur-sm shadow-xl flex justify-center">
-              <p className="relative">{time.format("mm")}</p>
-              <p className="text-base md:text-xl font-semibold absolute bottom-2 md:bottom-5 leading-[1]">
-                Menit
-              </p>
-            </div>
-            <p className="text-5xl md:text-9xl">:</p>
-            <div className="text-5xl md:text-9xl p-5 md:p-8 rounded-3xl bg-white/40 backdrop-blur-sm shadow-xl flex justify-center">
-              <p className="relative">{time.format("ss")}</p>
-              <p className="text-base md:text-xl font-semibold absolute bottom-2 md:bottom-5 leading-[1]">
-                Detik
-              </p>
-            </div>
-          </div>
+          <Clock />
           <Autocomplete
             {...defaultProps}
             sx={{ width: 300 }}
@@ -181,44 +152,7 @@ const MainPage: React.FC = () => {
               <TextField {...params} label="KAB. TULANG BAWANG" />
             )}
           />
-
-          <div className="w-full md:w-auto">
-            <div className="rounded-xl bg-white/40 backdrop-blur-sm shadow-lg mx-3 md:mx-0 mt-6 py-4 px-5">
-              <h4 className="text-center mb-4 font-extrabold text-xl">
-                Jadwal Waktu Solat Hari Ini
-              </h4>
-              <div className="grid grid-cols-3 md:grid-cols-7 gap-6">
-                <div className="flex flex-col justify-center items-center">
-                  <p className="font-bold text-base">Imsak</p>
-                  <p>{jadwal?.imsak}</p>
-                </div>
-                <div className="flex flex-col justify-center items-center">
-                  <p className="font-bold text-base">Subuh</p>
-                  <p>{jadwal?.subuh}</p>
-                </div>
-                <div className="flex flex-col justify-center items-center">
-                  <p className="font-bold text-base">Terbit</p>
-                  <p>{jadwal?.terbit}</p>
-                </div>
-                <div className="flex flex-col justify-center items-center">
-                  <p className="font-bold text-base">Dzuhur</p>
-                  <p>{jadwal?.dzuhur}</p>
-                </div>
-                <div className="flex flex-col justify-center items-center">
-                  <p className="font-bold text-base">Ashar</p>
-                  <p>{jadwal?.ashar}</p>
-                </div>
-                <div className="flex flex-col justify-center items-center">
-                  <p className="font-bold text-base">Maghrib</p>
-                  <p>{jadwal?.maghrib}</p>
-                </div>
-                <div className="flex flex-col justify-center items-center">
-                  <p className="font-bold text-base">Isya</p>
-                  <p>{jadwal?.isya}</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <PrayerToday />
         </div>
       </div>
       <footer className="w-full flex justify-center items-center">
