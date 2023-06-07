@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import jadwalSlice from "../feature/jadwal/slice";
+import { jadwalReducer, quranReducer } from "../feature";
 
 export const store = configureStore({
   reducer: {
-    jadwal: jadwalSlice,
+    jadwal: jadwalReducer,
+    quran: quranReducer,
   },
 });
 

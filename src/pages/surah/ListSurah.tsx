@@ -10,34 +10,19 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-
-interface OblistChapter {
-  name_arabic: string;
-  name_complex: string;
-  revelation_place: string;
-  verses_count: number;
-  translated_name: { name: string };
-}
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { getListSurah } from "../../feature/quran/action";
+import { listSurahState } from "../../utils/interface/quran";
 
 function ListSurah() {
-  const [listChapter, setListChapter] = useState<[OblistChapter]>();
-  const [loading, setLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const { listSurah, loading } = useAppSelector((state) => state.quran);
 
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get("https://api.quran.com/api/v4/chapters?language=id")
-      .then((item) => {
-        setLoading(false);
-        setListChapter(item?.data?.chapters);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+    dispatch(getListSurah());
+  }, [dispatch]);
 
   const ListChapter = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
@@ -48,6 +33,8 @@ function ListSurah() {
     overscrollBehaviorY: "none",
     margin: 5,
   }));
+
+  console.log(listSurah);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -76,15 +63,13 @@ function ListSurah() {
                 dense={true}
                 className="grid md:grid-cols-3 grid-cols-1 gap-4 !mx-1 md:!mx-20"
               >
-                {listChapter?.map((item: OblistChapter, idx: number) => {
+                {listSurah?.map((item: listSurahState, idx: number) => {
                   return (
                     <Link key={idx} to={`/surah/${idx + 1}`}>
                       <ListItem
                         className="drop-shadow bg-white rounded-lg cursor-pointer"
                         secondaryAction={
-                          <Typography fontSize={20}>
-                            {item?.name_arabic}
-                          </Typography>
+                          <Typography fontSize={20}>{item.nama}</Typography>
                         }
                       >
                         <ListItemAvatar className="flex justify-center items-center bg-no-repeat bg-center bg-frame-number w-8 h-10">
@@ -93,16 +78,16 @@ function ListSurah() {
                         <ListItemText
                           primary={
                             <Typography fontSize={16} fontWeight={600}>
-                              {item?.name_complex}{" "}
+                              {item.namaLatin}{" "}
                               <span className="text-sm font-light">
-                                ({item?.translated_name?.name})
+                                ({item.arti})
                               </span>
                             </Typography>
                           }
                           secondary={
                             <Typography fontSize={14} fontWeight={300}>
-                              {item?.revelation_place} .{" "}
-                              <span>{item?.verses_count} ayah</span>
+                              {item.tempatTurun} .{" "}
+                              <span>{item.jumlahAyat} ayah</span>
                             </Typography>
                           }
                         />

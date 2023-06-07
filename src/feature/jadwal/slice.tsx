@@ -1,17 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
+import { UsersState } from "../../utils/interface/jadwal";
 import { getAllCity, getJadwalSolat } from "./actions";
-
-interface propsLocation {
-  id: string;
-  lokasi: string;
-}
-
-interface UsersState {
-  allCity: propsLocation[];
-  loading: "idle" | "pending" | "succeeded" | "failed";
-  solat: any;
-}
 
 const initialState = {
   allCity: [],

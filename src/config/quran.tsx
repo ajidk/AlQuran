@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
-const server = "https://api.myquran.com/v1/";
+const server = "https://equran.id/api/v2/";
 
-const connection: AxiosInstance = axios.create({
+const quran: AxiosInstance = axios.create({
   baseURL: server,
 });
 
@@ -20,7 +21,7 @@ const responseInterceptor = (response: AxiosResponse) => {
   return response;
 };
 
-connection.interceptors.request.use(requestInterceptor);
-connection.interceptors.response.use(responseInterceptor);
+quran.interceptors.request.use(requestInterceptor);
+quran.interceptors.response.use(responseInterceptor);
 
-export default connection;
+export default quran;
