@@ -38,9 +38,7 @@ export const getJadwalSolat = createAsyncThunk<any, propsJadwalSolat>(
         throw new Error(messages);
       }
 
-      //   return console.log(res.data.data);
-
-      return res.data;
+      return res.data.data;
       //   return data;
     } catch (e: any) {
       console.log("Error", e);

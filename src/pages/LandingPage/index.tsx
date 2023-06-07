@@ -38,7 +38,7 @@ const MainPage: React.FC = () => {
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const timeNow = moment().format("HH:mm");
-  const jadwal = solat?.data?.jadwal;
+  const jadwal = solat?.jadwal;
 
   timeNow === jadwal?.isya ||
   timeNow === jadwal?.subuh ||
@@ -53,9 +53,9 @@ const MainPage: React.FC = () => {
     dispatch(
       getJadwalSolat({ id: idCity?.id, today: moment().format("YYYY/MM/DD") })
     ).then((item) => {
-      const jadwalSolat = item.payload.data.jadwal;
+      const jadwalSolat = item.payload.jadwal;
 
-      const random: PropsTipeSolat[] = [
+      const solat: PropsTipeSolat[] = [
         {
           nama: "Subuh",
           waktu: moment(jadwalSolat?.subuh, "HH:ii"),
@@ -83,9 +83,7 @@ const MainPage: React.FC = () => {
         },
       ];
 
-      const jadwalSaatIni = random?.find((jadwal) =>
-        moment()?.isSameOrBefore(jadwal?.waktu)
-      );
+      const jadwalSaatIni = solat?.find(() => moment()?.isSameOrBefore());
 
       const selisih = jadwalSaatIni?.waktu?.diff(moment());
       const durasi = moment?.duration(selisih);
@@ -152,7 +150,7 @@ const MainPage: React.FC = () => {
               <TextField {...params} label="KAB. TULANG BAWANG" />
             )}
           />
-          <PrayerToday />
+          <PrayerToday jadwal={jadwal} />
         </div>
       </div>
       <footer className="w-full flex justify-center items-center">

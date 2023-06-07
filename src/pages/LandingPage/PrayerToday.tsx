@@ -1,8 +1,7 @@
-import { useAppSelector } from "../../app/hooks";
+import React from "react";
+import { prayerTodayState } from "../../utils/interface/jadwal";
 
-const PrayerToday = () => {
-  const { solat } = useAppSelector((state) => state.jadwal);
-  const jadwal = solat?.data?.jadwal;
+const PrayerToday: React.FC<prayerTodayState> = ({ jadwal }) => {
   return (
     <div className="w-full md:w-auto">
       <div className="rounded-xl bg-white/40 backdrop-blur-sm shadow-lg mx-3 md:mx-0 mt-6 py-4 px-5">
