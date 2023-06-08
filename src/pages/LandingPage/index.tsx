@@ -64,6 +64,16 @@ const MainPage: React.FC = () => {
           clock: jadwalSolat?.subuh,
         },
         {
+          nama: "Terbit",
+          waktu: moment(jadwalSolat?.terbit, "HH:ii"),
+          clock: jadwalSolat?.terbit,
+        },
+        {
+          nama: "Dhuha",
+          waktu: moment(jadwalSolat?.dhuha, "HH:ii"),
+          clock: jadwalSolat?.dhuha,
+        },
+        {
           nama: "Dzuhur",
           waktu: moment(jadwalSolat?.dzuhur, "HH:ii"),
           clock: jadwalSolat?.dzuhur,
@@ -85,22 +95,29 @@ const MainPage: React.FC = () => {
         },
       ];
 
-      const jadwalSaatIni = solat?.find((solat) => {
-        return moment().isSameOrBefore(solat.waktu) === true
-          ? moment()?.isSameOrBefore()
-          : moment()?.isSameOrBefore(solat.waktu);
-      });
+      const jadwalSaatIni = solat?.find((solat) =>
+        moment()?.isSameOrBefore(solat.waktu)
+      );
 
       const selisih = jadwalSaatIni?.waktu?.diff(moment());
+
       const durasi = moment?.duration(selisih);
       const jam = durasi?.hours();
       const menit = durasi?.minutes();
 
-      setTipeSolat({
-        nama: String(jadwalSaatIni?.nama),
-        time: `${jam}:${menit}`,
-        clock: jadwalSaatIni?.clock,
-      });
+      if (jadwalSaatIni) {
+        setTipeSolat({
+          nama: String(jadwalSaatIni?.nama),
+          time: `${jam}:${menit}`,
+          clock: jadwalSaatIni?.clock,
+        });
+      } else {
+        setTipeSolat({
+          nama: solat[0]?.nama,
+          time: String(solat[0]?.waktu),
+          clock: solat[0]?.clock,
+        });
+      }
     });
   }, [dispatch, idCity?.id]);
 
