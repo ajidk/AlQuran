@@ -31,7 +31,6 @@ const Tafsir = () => {
   const { id } = useParams();
   const [surah, setSurah] = useState<PSurah>();
   const [syaikh, setSyaikh] = useState("01");
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     axios
