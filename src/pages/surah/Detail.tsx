@@ -111,7 +111,7 @@ const Detail = () => {
             </Button>
           </Box>
           {id !== "1" && (
-            <Box className="drop-shadow bg-white rounded-lg my-4 p-6 mx-20">
+            <Box className="drop-shadow bg-white rounded-lg my-4 p-6 mx-4 md:mx-20">
               <Typography
                 fontSize={30}
                 align="center"
