@@ -13,7 +13,7 @@ import { CustomSpeedDial } from "../../components";
 import CustomModal from "../../components/modal";
 import { updateDetail, updateModal } from "../../feature/general/slice";
 import { dailyPrayer, dailyState } from "../../utils/json/dailyPrayer";
-import { ListChapter } from "../../utils/styled/listSurah";
+
 
 const Doa = () => {
   const dispatch = useAppDispatch();
