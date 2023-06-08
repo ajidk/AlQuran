@@ -85,8 +85,9 @@ const MainPage: React.FC = () => {
         },
       ];
 
-      const jadwalSaatIni = solat?.find((solat) =>
-        moment()?.isSameOrBefore(solat.waktu)
+      const jadwalSaatIni = solat?.find(
+        (solat) =>
+          moment()?.isSameOrBefore(solat.waktu) || moment()?.isSameOrBefore()
       );
 
       const selisih = jadwalSaatIni?.waktu?.diff(moment());
