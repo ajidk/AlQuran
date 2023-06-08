@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
-import { getListSurah } from "./action";
 import { quranState } from "../../utils/interface/quran";
+import { detailSurah, getListSurah } from "./action";
 
 // interface listSurahState
 
@@ -9,6 +9,7 @@ const initialState = {
   listSurah: [],
   loading: false,
   solat: null,
+  detail: null,
 } as quranState;
 
 const quranSlice = createSlice({
@@ -23,9 +24,13 @@ const quranSlice = createSlice({
     builder.addCase(getListSurah.pending, (state) => {
       state.loading = true;
     });
-    // builder.addCase(getJadwalSolat.fulfilled, (state, action) => {
-    //   state.solat = action.payload;
-    // });
+    builder.addCase(detailSurah.fulfilled, (state, action) => {
+      state.detail = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(detailSurah.pending, (state) => {
+      state.loading = false;
+    });
   },
 });
 

@@ -14,4 +14,5 @@ export interface quranState {
   listSurah: listSurahState[];
   loading: boolean;
   solat: any;
+  detail: any;
 }

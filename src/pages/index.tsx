@@ -1,5 +1,5 @@
-import Surah from "./surah";
-import ListSurah from "./surah/ListSurah";
+import Surah from "./surah/Detail";
+import ListSurah from "./surah";
 import Tafsir from "./tafsir";
 import MainPage from "./LandingPage";
 

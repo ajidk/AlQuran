@@ -8,6 +8,7 @@ import { getAllCity, getJadwalSolat } from "../../feature/jadwal/actions";
 import { tanggal } from "../../utils/date";
 import Clock from "./Clock";
 import PrayerToday from "./PrayerToday";
+import { CustomSpeedDial } from "../../components";
 
 interface PropsTipeSolat {
   nama: string;
@@ -169,6 +170,7 @@ const MainPage: React.FC = () => {
         </div>
       </footer>
       <audio ref={audioRef} src="https://cldup.com/mmx-BZl2wj.mp3?_=1" />
+      <CustomSpeedDial />
     </main>
   );
 };

@@ -6,6 +6,7 @@ export default {
       backgroundImage: {
         "frame-number": "url('../assets/icons/ic-frame-number.svg')",
         mosque: "url('../src/assets/img/medina.webp')",
+        quran: "url('../src/assets/img/quran.webp')",
       },
     },
   },
