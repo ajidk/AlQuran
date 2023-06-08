@@ -41,10 +41,10 @@ function Surah() {
           <Fragment>
             <Box
               bgcolor="#59AD94"
-              className="w-full flex flex-col justify-center items-center py-8"
+              className="w-full flex flex-col justify-center items-center py-8 px-4"
             >
-              <img alt="quran" src={IQuran} width={235} />
-              <Typography fontSize={40} fontWeight={700} color="#fff">
+              <img alt="quran" src={IQuran} className="w-52 md:w-56" />
+              <Typography fontSize={30} fontWeight={700} color="#fff">
                 Al Quran Online
               </Typography>
               <Typography fontSize={13} fontWeight={400} color="#fff">
