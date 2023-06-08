@@ -5,7 +5,7 @@ import {
   ListItemAvatar,
   ListItemText,
   Stack,
-  Typography
+  Typography,
 } from "@mui/material";
 import { Fragment, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -40,41 +40,41 @@ const Doa = () => {
           Doa Harian
         </Typography>
       </Box>
-      <Stack className="flex justify-center items-center my-4">
+      <Stack className="flex my-4 flex-1 !mx-1 md:!mx-20">
         <input
           placeholder="Cari nama doa"
-          className="border py-3 px-5 w-72 rounded-2xl"
+          className="border py-3 text-center rounded-2xl"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
       </Stack>
-      <ListChapter>
-        <List
-          dense={true}
-          className="grid md:grid-cols-3 grid-cols-1 gap-4 !mx-1 md:!mx-20 items-center justify-center"
-        >
-          {filterPrayer?.map((item: dailyState, idx: number) => {
-            return (
-              <ListItem
-                key={`daily-${idx}`}
-                className="drop-shadow bg-white rounded-lg cursor-pointer"
-                onClick={() => onHandleModal(item)}
-              >
-                <ListItemAvatar className="flex justify-center items-center bg-no-repeat bg-center bg-frame-number w-8 h-10">
-                  <div>{idx + 1}</div>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <Typography fontSize={16} fontWeight={600}>
-                      {item.doa}
-                    </Typography>
-                  }
-                />
-              </ListItem>
-            );
-          })}
-        </List>
-      </ListChapter>
+
+      <List
+        dense={true}
+        className="grid md:grid-cols-3 grid-cols-1 gap-4 !mx-1 md:!mx-20 items-center justify-center"
+      >
+        {filterPrayer?.map((item: dailyState, idx: number) => {
+          return (
+            <ListItem
+              key={`daily-${idx}`}
+              className="drop-shadow bg-white rounded-lg cursor-pointer"
+              onClick={() => onHandleModal(item)}
+            >
+              <ListItemAvatar className="flex justify-center items-center bg-no-repeat bg-center bg-frame-number w-8 h-10">
+                <div>{idx + 1}</div>
+              </ListItemAvatar>
+              <ListItemText
+                primary={
+                  <Typography fontSize={16} fontWeight={600}>
+                    {item.doa}
+                  </Typography>
+                }
+              />
+            </ListItem>
+          );
+        })}
+      </List>
+
       <CustomModal>
         <Stack justifyContent="center" alignItems="center" rowGap={3}>
           <Typography fontSize={20} fontWeight={600}>
