@@ -1,10 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { jadwalReducer, quranReducer } from "../feature";
+import { generalReducer, jadwalReducer, quranReducer } from "../feature";
 
 export const store = configureStore({
   reducer: {
     jadwal: jadwalReducer,
     quran: quranReducer,
+    general: generalReducer,
   },
 });
 

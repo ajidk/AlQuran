@@ -1,4 +1,8 @@
-import { MosqueOutlined, NewspaperOutlined } from "@mui/icons-material";
+import {
+  MosqueOutlined,
+  NewspaperOutlined,
+  VolunteerActivismOutlined,
+} from "@mui/icons-material";
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 const actions = [
   { icon: <MosqueOutlined />, name: "Jadwal", path: "/" },
   { icon: <NewspaperOutlined />, name: "AlQuran", path: "/surah" },
-  // { icon: <PrintIcon />, name: "Print" },
+  { icon: <VolunteerActivismOutlined />, name: "Doa", path: "/prayer" },
   // { icon: <ShareIcon />, name: "Share" },
 ];
 
