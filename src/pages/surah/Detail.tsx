@@ -1,8 +1,6 @@
 import {
   ArrowBack,
-  ArrowForward,
-  MosqueOutlined,
-  NewspaperOutlined,
+  ArrowForward
 } from "@mui/icons-material";
 import {
   Backdrop,
@@ -16,23 +14,15 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  SpeedDial,
-  SpeedDialAction,
-  SpeedDialIcon,
-  Stack,
-  Typography,
+  Typography
 } from "@mui/material";
 import { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { CustomSpeedDial } from "../../components";
 import AudioPlayer from "../../components/AudioPlayer";
 import { detailSurah } from "../../feature/quran/action";
 import Header from "./Header";
-import FileCopyIcon from "@mui/icons-material/FileCopyOutlined";
-import SaveIcon from "@mui/icons-material/Save";
-import PrintIcon from "@mui/icons-material/Print";
-import ShareIcon from "@mui/icons-material/Share";
-import { CustomSpeedDial } from "../../components";
 
 interface PSurah {
   verse_key: string;
