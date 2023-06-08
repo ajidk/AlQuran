@@ -1,3 +1,4 @@
 import IQuran from "./quran.webp";
+import IMedina from "./medina.webp";
 
-export { IQuran };
+export { IQuran, IMedina };

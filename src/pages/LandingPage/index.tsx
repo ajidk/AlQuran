@@ -9,6 +9,7 @@ import { tanggal } from "../../utils/date";
 import Clock from "./Clock";
 import PrayerToday from "./PrayerToday";
 import { CustomSpeedDial } from "../../components";
+import { IMedina } from "../../assets/img";
 
 interface PropsTipeSolat {
   nama: string;
@@ -125,7 +126,10 @@ const MainPage: React.FC = () => {
   };
 
   return (
-    <main className="bg-mosque bg-no-repeat bg-cover bg-center">
+    <main
+      className="bg-no-repeat bg-cover bg-center"
+      style={{ backgroundImage: `url('${IMedina}')` }}
+    >
       <div className="container mx-auto">
         <div className="flex flex-col items-center justify-center h-[calc(100vh-36px)] min-h-[736px] mb-3">
           <h1 className="text-xl md:text-4xl font-bold text-center mx-1 md:mx-0">
