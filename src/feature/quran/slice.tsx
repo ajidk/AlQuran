@@ -29,7 +29,7 @@ const quranSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(detailSurah.pending, (state) => {
-      state.loading = false;
+      state.loading = true;
     });
   },
 });
