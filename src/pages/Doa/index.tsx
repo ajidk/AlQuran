@@ -14,7 +14,6 @@ import CustomModal from "../../components/modal";
 import { updateDetail, updateModal } from "../../feature/general/slice";
 import { dailyPrayer, dailyState } from "../../utils/json/dailyPrayer";
 
-
 const Doa = () => {
   const dispatch = useAppDispatch();
   const { byDetail } = useAppSelector((state) => state.general);

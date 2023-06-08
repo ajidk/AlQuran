@@ -22,6 +22,7 @@ const CustomModal: React.FC<customModalState> = ({ children }) => {
       <ModalDialog
         aria-labelledby="nested-modal-title"
         aria-describedby="nested-modal-description"
+        className="overflow-y-scroll scroll-smooth"
         sx={(theme) => ({
           [theme.breakpoints.only("lg")]: {
             top: "unset",
