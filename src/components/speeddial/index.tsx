@@ -1,4 +1,5 @@
 import {
+  AccessAlarm,
   MosqueOutlined,
   NewspaperOutlined,
   VolunteerActivismOutlined,
@@ -11,6 +12,7 @@ const actions = [
   { icon: <MosqueOutlined />, name: "Jadwal", path: "/" },
   { icon: <NewspaperOutlined />, name: "AlQuran", path: "/surah" },
   { icon: <VolunteerActivismOutlined />, name: "Doa", path: "/prayer" },
+  { icon: <AccessAlarm />, name: "Dzikir", path: "/dzikir" },
   // { icon: <ShareIcon />, name: "Share" },
 ];
 
