@@ -13,7 +13,6 @@ import { dzikr } from "../../utils/json/dzikr";
 import "./css/embla.css";
 
 type PropType = {
-  slides: number[];
   options?: EmblaOptionsType;
 };
 
