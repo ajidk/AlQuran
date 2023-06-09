@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useCallback } from "react";
 import useEmblaCarousel, {
   EmblaCarouselType,
   EmblaOptionsType,
 } from "embla-carousel-react";
-import { DotButton, PrevButton, NextButton } from "./button";
+import React, { useCallback, useEffect, useState } from "react";
+import { DotButton } from "./button";
 
+import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import { Box, FormControlLabel, Switch } from "@mui/material";
 import parse from "html-react-parser";
-import "./css/embla.css";
 import { CustomSpeedDial } from "../../components";
 import { dzikr } from "../../utils/json/dzikr";
-import { Box, FormControlLabel, Switch, Typography } from "@mui/material";
-import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import "./css/embla.css";
 
 type PropType = {
   slides: number[];
