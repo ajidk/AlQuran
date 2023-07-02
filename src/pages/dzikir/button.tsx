@@ -12,7 +12,7 @@ export const DotButton: React.FC<DotButtonPropType> = (props) => {
 
   return (
     <button
-      className={"!bg-red-500 rounded-full embla__dot".concat(
+      className={"!bg-red-500 !hidden md:!flex rounded-full embla__dot".concat(
         selected ? " embla__dot--selected !bg-black" : ""
       )}
       type="button"

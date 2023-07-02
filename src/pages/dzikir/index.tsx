@@ -64,7 +64,7 @@ const EmblaCarousel: React.FC<PropType> = () => {
     <>
       <Box
         bgcolor="#59AD94"
-        className="w-full flex justify-between items-center py-8 px-4"
+        className="w-full grid grid-cols-3 items-center py-8 px-4"
       >
         <Box>
           <FormControlLabel
@@ -76,10 +76,15 @@ const EmblaCarousel: React.FC<PropType> = () => {
             onChange={() => setToggle(!toggle)}
           />
         </Box>
-        <Box fontSize={30} fontWeight={700} color="#fff">
+        <Box
+          className="text-2xl flex-1 md:text-4xl"
+          fontWeight={700}
+          color="#fff"
+          textAlign={"center"}
+        >
           Dzikir {toggle ? "pagi" : "petang"}
         </Box>
-        <Box className="hidden md:block">
+        <Box className="hidden md:flex justify-end items-end">
           <ArrowBack
             onClick={scrollPrev}
             className={
@@ -102,8 +107,8 @@ const EmblaCarousel: React.FC<PropType> = () => {
           <div className="embla__container">
             {dzikr.map(
               (item, index) =>
-                item.time === (toggle ? "pagi" : "petang") ||
-                (item.time === "" && (
+                (item.time === (toggle ? "pagi" : "petang") ||
+                  item.time === "") && (
                   <div
                     className="flex justify-center items-start min-w-full px-4 md:px-10 overflow-scroll text-center"
                     key={index}
@@ -129,7 +134,7 @@ const EmblaCarousel: React.FC<PropType> = () => {
                       </div>
                     </div>
                   </div>
-                ))
+                )
             )}
           </div>
         </div>
