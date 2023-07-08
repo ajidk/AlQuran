@@ -7,16 +7,17 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Stack,
   Typography,
 } from "@mui/material";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { IQuran } from "../../assets/img";
+import { CustomSpeedDial } from "../../components";
 import { getListSurah } from "../../feature/quran/action";
 import { listSurahState } from "../../utils/interface/quran";
 import { ListChapter } from "../../utils/styled/listSurah";
-import { CustomSpeedDial } from "../../components";
 
 function Surah() {
   const dispatch = useAppDispatch();
@@ -25,6 +26,17 @@ function Surah() {
   useEffect(() => {
     dispatch(getListSurah());
   }, [dispatch]);
+
+  const [search, setSearch] = useState<string>("");
+
+  // const statusSurah = checked ? filterSurah.sort() : filterSurah.reverse();
+
+  const filterSurah = listSurah.filter(
+    (item: listSurahState) =>
+      item.namaLatin.toLowerCase().includes(search) ||
+      item.arti.toLowerCase().includes(search) ||
+      item.tempatTurun.toLowerCase().includes(search)
+  );
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -52,28 +64,25 @@ function Surah() {
               </Typography>
             </Box>
             <Grid container xs={12} md={12} m={2}>
-              <Typography className="sticky top-0 w-full text-center text-[#59AD94] !mb-4 !py-4 !text-3xl bg-white z-20">
-                Daftar Surat
-              </Typography>
-              {/* <Stack className="flex !flex-row flex-1 justify-end gap-5 items-end !mx-1 md:!mx-20 my-3">
-                <TextField
-                  placeholder="Cari surah"
-                  variant="outlined"
-                  size="small"
+              <Stack className="flex !flex-row flex-1 justify-center gap-5 items-end !mx-1 md:!mx-20 my-3">
+                <input
+                  placeholder="Placeholder"
+                  value={search}
+                  className="rounded-2xl border text-center py-2 w-1/2 outline-none"
+                  onChange={(e) => setSearch(e.target.value)}
                 />
-                <FormControlLabel
-                  value="ascending"
-                  control={<Switch color="primary" />}
-                  label="ascending"
-                  labelPlacement="end"
-                />
-              </Stack> */}
+              </Stack>
+              <Box className="sticky top-0 bg-white z-20 flex justify-center flex-col w-full !mb-4 !py-4">
+                <Typography className="text-center text-[#59AD94] !text-3xl">
+                  Daftar Surat
+                </Typography>
+              </Box>
               <ListChapter>
                 <List
                   dense={true}
                   className="grid md:grid-cols-3 grid-cols-1 gap-4 !mx-1 md:!mx-20"
                 >
-                  {listSurah?.map((item: listSurahState, idx: number) => {
+                  {filterSurah?.map((item: listSurahState, idx: number) => {
                     return (
                       <Link key={idx} to={`/surah/${idx + 1}`}>
                         <ListItem
