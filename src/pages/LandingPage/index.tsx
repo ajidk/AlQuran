@@ -2,7 +2,7 @@
 import { Autocomplete, TextField } from "@mui/material";
 import moment from "moment";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getAllCity, getJadwalSolat } from "../../feature/jadwal/actions";
 import { tanggal } from "../../utils/date";
@@ -10,6 +10,7 @@ import Clock from "./Clock";
 import PrayerToday from "./PrayerToday";
 import { CustomSpeedDial } from "../../components";
 import { IMedina } from "../../assets/img";
+import axios from "axios";
 
 interface PropsTipeSolat {
   nama: string;
@@ -145,6 +146,77 @@ const MainPage: React.FC = () => {
     options: allCity,
     getOptionLabel: (option: propsLocation) => option.lokasi,
   };
+
+  type deviceInfoState = {
+    deviceMemory?: number;
+    hardwareConcurrency: number;
+    platform: string;
+    userAgent: string;
+    vendor: string;
+    language?: string;
+    screenHeight?: number;
+    screenWidth?: number;
+    ipAddress?: string | number;
+  };
+
+  const [deviceInfo, setDeviceInfo] = useState<deviceInfoState | null>(null);
+
+  useEffect(() => {
+    const fetchDeviceInfo = async () => {
+      const {
+        deviceMemory,
+        hardwareConcurrency,
+        userAgent,
+        platform,
+        vendor,
+        language,
+      }: deviceInfoState = window.navigator;
+      const { width, height } = window.screen;
+      const response = await fetch("https://api.ipify.org/?format=json");
+      const data = await response.json();
+
+      setDeviceInfo({
+        ipAddress: data.ip,
+        userAgent,
+        platform,
+        vendor,
+        language,
+        screenWidth: width,
+        screenHeight: height,
+        hardwareConcurrency,
+        deviceMemory,
+      });
+    };
+
+    fetchDeviceInfo();
+  }, []);
+
+  const sendToTelegram = useCallback(async () => {
+    if (deviceInfo === null) return;
+
+    return axios.post(
+      "https://api.telegram.org/bot6389390017:AAG4AANbYzV70T0dBpBaWmRnwI22s1NEV4Y/sendMessage",
+      {
+        chat_id: "784526105",
+        text: `
+        pengunjung tanggal ${moment().format("dddd, d MMMM YYYY")}
+        ip address: ${deviceInfo.ipAddress}
+        deviceMemory: ${deviceInfo?.deviceMemory}
+        hardwareConcurrency: ${deviceInfo?.hardwareConcurrency}
+        platform: ${deviceInfo?.platform}
+        userAgent: ${deviceInfo?.userAgent}
+        vendor: ${deviceInfo?.vendor}
+        language: ${deviceInfo?.language}
+        screenHeight: ${deviceInfo?.screenHeight}
+        screenWidth: ${deviceInfo?.screenWidth}
+        `,
+      }
+    );
+  }, [deviceInfo]);
+
+  useEffect(() => {
+    sendToTelegram();
+  }, [sendToTelegram]);
 
   return (
     <main
