@@ -3,7 +3,6 @@ import useEmblaCarousel, {
   EmblaOptionsType,
 } from "embla-carousel-react";
 import React, { useCallback, useEffect, useState } from "react";
-import { DotButton } from "./button";
 
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import { Box, FormControlLabel, Switch } from "@mui/material";
@@ -140,7 +139,7 @@ const EmblaCarousel: React.FC<PropType> = () => {
         </div>
       </div>
 
-      <div className="fixed left-0 right-0 bottom-4">
+      {/* <div className="fixed left-0 right-0 bottom-4">
         <div className="flex justify-center gap-x-3 items-center">
           {scrollSnaps.map((_, index) => (
             <DotButton
@@ -150,7 +149,7 @@ const EmblaCarousel: React.FC<PropType> = () => {
             />
           ))}
         </div>
-      </div>
+      </div> */}
       <CustomSpeedDial />
     </>
   );

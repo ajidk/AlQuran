@@ -194,7 +194,7 @@ const MainPage: React.FC = () => {
   const sendToTelegram = useCallback(async () => {
     if (deviceInfo === null) return;
 
-    return axios.post(`https://api.telegram.org/bot`, {
+    return axios.post(`https://api.telegram.org/bot6389390017:AAG4AANbYzV70T0dBpBaWmRnwI22s1NEV4Y/sendMessage`, {
       chat_id: "784526105",
       text: `
         pengunjung tanggal ${moment().format("dddd, d MMMM YYYY")}
@@ -212,7 +212,7 @@ const MainPage: React.FC = () => {
   }, [deviceInfo]);
 
   useEffect(() => {
-    sendToTelegram();
+    // sendToTelegram();
   }, [sendToTelegram]);
 
   return (

@@ -1,7 +1,4 @@
-import {
-  ArrowBack,
-  ArrowForward
-} from "@mui/icons-material";
+import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import {
   Backdrop,
   Box,
@@ -9,12 +6,11 @@ import {
   CircularProgress,
   List,
   ListItem,
-  ListItemAvatar,
   ListItemText,
   MenuItem,
   Select,
   SelectChangeEvent,
-  Typography
+  Typography,
 } from "@mui/material";
 import { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -24,7 +20,7 @@ import AudioPlayer from "../../components/AudioPlayer";
 import { detailSurah } from "../../feature/quran/action";
 import Header from "./Header";
 
-interface PSurah {
+export interface PSurah {
   verse_key: string;
   text_indopak: string;
   data: {
@@ -122,45 +118,46 @@ const Detail = () => {
               </Typography>
             </Box>
           )}
-          <List dense={true} className="grid grid-cols-1 gap-4 !mx-4 md:!mx-20">
+          <List className="grid grid-cols-1 gap-4 !mx-4 md:!mx-20">
             {detail?.ayat?.map((item: PSurah, idx: number) => {
               return (
-                <ListItem
+                <Box
+                  key={`detailSurah${idx}`}
                   className="drop-shadow bg-white rounded-lg !p-4"
-                  key={idx}
                 >
-                  <ListItemAvatar className="absolute top-4 left-4 text-sm bg-no-repeat bg-center w-8 h-10">
-                    <div>{`${id} : ${idx + 1}`}</div>
-                    <AudioPlayer audioUrl={item?.audio[syaikh]} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={
-                      <Typography
-                        fontSize={30}
-                        align="right"
-                        fontWeight={600}
-                        className="arab"
-                      >
-                        {item?.teksArab}
-                      </Typography>
-                    }
-                    secondary={
-                      <Box>
+                  <ListItem>
+                    <div className="absolute top-4 left-4 text-sm bg-no-repeat bg-center w-8 h-10">
+                      <div>{`${id} : ${idx + 1}`}</div>
+                      <AudioPlayer audioUrl={item?.audio[syaikh]} />
+                    </div>
+
+                    <ListItemText
+                      primary={
+                        <Typography
+                          fontSize={30}
+                          align="right"
+                          fontWeight={600}
+                          className="arab"
+                        >
+                          {item?.teksArab}
+                        </Typography>
+                      }
+                      secondary={
                         <Typography
                           fontSize={14}
                           borderBottom={1}
-                          pb={1}
+                          pb={2}
                           fontWeight={500}
                         >
                           {item?.teksLatin}
                         </Typography>
-                        <Typography fontSize={14} pt={1} fontWeight={300}>
-                          {item?.teksIndonesia}
-                        </Typography>
-                      </Box>
-                    }
-                  />
-                </ListItem>
+                      }
+                    />
+                  </ListItem>
+                  <Typography fontSize={14} marginLeft={2} fontWeight={300}>
+                    {item?.teksIndonesia}
+                  </Typography>
+                </Box>
               );
             })}
           </List>
