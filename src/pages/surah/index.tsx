@@ -63,10 +63,10 @@ function Surah() {
                 Website Al Quran Digital Online Terjemahan Bahasa Indonesia
               </Typography>
             </Box>
-            <Grid container xs={12} md={12} m={2}>
+            <Grid container m={2}>
               <Stack className="flex !flex-row flex-1 justify-center gap-5 items-end !mx-1 md:!mx-20 my-3">
                 <input
-                  placeholder="Placeholder"
+                  placeholder="Cari surah..."
                   value={search}
                   className="rounded-2xl border text-center py-2 w-1/2 outline-none"
                   onChange={(e) => setSearch(e.target.value)}

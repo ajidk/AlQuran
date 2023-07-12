@@ -194,11 +194,9 @@ const MainPage: React.FC = () => {
   const sendToTelegram = useCallback(async () => {
     if (deviceInfo === null) return;
 
-    return axios.post(
-      "https://api.telegram.org/bot6389390017:AAG4AANbYzV70T0dBpBaWmRnwI22s1NEV4Y/sendMessage",
-      {
-        chat_id: "784526105",
-        text: `
+    return axios.post(`https://api.telegram.org/bot`, {
+      chat_id: "784526105",
+      text: `
         pengunjung tanggal ${moment().format("dddd, d MMMM YYYY")}
         ip address: ${deviceInfo.ipAddress}
         deviceMemory: ${deviceInfo?.deviceMemory}
@@ -210,8 +208,7 @@ const MainPage: React.FC = () => {
         screenHeight: ${deviceInfo?.screenHeight}
         screenWidth: ${deviceInfo?.screenWidth}
         `,
-      }
-    );
+    });
   }, [deviceInfo]);
 
   useEffect(() => {
